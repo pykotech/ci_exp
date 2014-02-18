@@ -1,0 +1,51 @@
+<?php
+
+
+class Login extends CI_Controller {
+        public $db_pre;
+
+	public function __construct() {
+		parent::__construct();
+		$this->load->library('session','database','asseto');
+                $this->db_pre = 'tbl';
+	}
+	public function start()
+	{
+		$this->load->view('header');
+		echo "<form action=\"".site_url('login/login')."\" method=\"post\">";
+		echo form_input();
+		echo "</form>"
+
+		$this->load->view('footer');
+		
+	}
+	
+	public function login()
+	{
+		$this->load->view('header');
+		//check if form submit
+		if($this->input->post('username')) {
+                  $usr = $this->input->post('username');
+                  $passwd = $this->input->post('password');
+ 		  echo "logging you in...";
+	
+			if($this->usermdl->check($usr,$pass)) {
+				$data = array('username' => $this->input->post('username'), 'timestamp' => $timestamp );
+				$timestamp = time();
+				$mysqldate = date( 'Y-m-d H:i:s',$timestamp); 
+				//date(T) is timezone
+			        $this->db->query("INSERT INTO tbl_logins VALUES (null,'". $uname  ."','". $mysqldate. "','".date('T')."','ok')"); 
+				$this->session->set_userdata($data);
+				echo "<span id=\"loginsuccess\"><strong>success</strong></span>";
+			} else {
+				$this->db->query("INSERT INTO tbl_logins VALUES (null,'". $usr  ."','". $mysqldate. "','".date('T')."','x')");
+        			echo "<span id=\"loginfail\"><strong>failed</strong></span>";
+                        }
+		}
+		$this->load->view('footer');
+	}
+	
+	public function logout() {
+		$this->session
+	}
+}
